@@ -15,21 +15,21 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "StringFormat.h"
-#include "Util.h"
-#include "MapDefines.h"
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 #include <bitset>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <deque>
 #include <fstream>
 #include <set>
 #include <unordered_map>
-#include <cstdlib>
-#include <cstring>
 
 #include "Common.h"
+#include "MapDefines.h"
+#include "StringFormat.h"
+#include "Util.h"
 #ifdef PLATFORM_WINDOWS
 #undef PLATFORM_WINDOWS
 #endif
