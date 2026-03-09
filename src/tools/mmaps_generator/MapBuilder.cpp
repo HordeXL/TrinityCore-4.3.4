@@ -16,6 +16,7 @@
  */
 
 #include "MapBuilder.h"
+#include "Containers.h"
 #include "IntermediateValues.h"
 #include "MMapDefines.h"
 #include "MapTree.h"
@@ -975,44 +976,19 @@ namespace MMAP
                 return true;
 
         if (m_skipJunkMaps)
-            switch (mapID)
-            {
-                case 13:    // test.wdt
-                case 25:    // ScottTest.wdt
-                case 29:    // Test.wdt
-                case 42:    // Colin.wdt
-                case 169:   // EmeraldDream.wdt (unused, and very large)
-                case 451:   // development.wdt
-                case 573:   // ExteriorTest.wdt
-                case 597:   // CraigTest.wdt
-                case 605:   // development_nonweighted.wdt
-                case 606:   // QA_DVD.wdt
-                case 651:   // ElevatorSpawnTest.wdt
-                    return true;
-                default:
-                    if (isTransportMap(mapID))
-                        return true;
-                    break;
-            }
+        {
+            if (isDevMap(mapID))
+                return true;
+
+            if (isTransportMap(mapID))
+                return true;
+        }
 
         if (m_skipBattlegrounds)
-            switch (mapID)
-            {
-                case 30:    // Alterac Valley
-                case 37:    // ?
-                case 489:   // Warsong Gulch
-                case 529:   // Arathi Basin
-                case 566:   // Eye of the Storm
-                case 607:   // Strand of the Ancients
-                case 628:   // Isle of Conquest
-                case 726:   // Twin Peaks
-                case 727:   // Silvershard Mines
-                case 761:   // The Battle for Gilneas
-                case 968:   // Rated Eye of the Storm
-                    return true;
-                default:
-                    break;
-            }
+        {
+            if (isBattlegroundMap(mapID))
+                return true;
+        }
 
         return false;
     }
@@ -1020,58 +996,10 @@ namespace MMAP
     /**************************************************************************/
     bool MapBuilder::isTransportMap(uint32 mapID) const
     {
-        switch (mapID)
-        {
-            // transport maps
-            case 582:
-            case 584:
-            case 586:
-            case 587:
-            case 588:
-            case 589:
-            case 590:
-            case 591:
-            case 592:
-            case 593:
-            case 594:
-            case 596:
-            case 610:
-            case 612:
-            case 613:
-            case 614:
-            case 620:
-            case 621:
-            case 622:
-            case 623:
-            case 641:
-            case 642:
-            case 647:
-            case 662:
-            case 672:
-            case 673:
-            case 674:
-            case 712:
-            case 713:
-            case 718:
-            case 738:
-            case 739:
-            case 740:
-            case 741:
-            case 742:
-            case 743:
-            case 747:
-            case 748:
-            case 749:
-            case 750:
-            case 762:
-            case 763:
-            case 765:
-            case 766:
-            case 767:
-                return true;
-            default:
-                return false;
-        }
+        if (MapEntry const* map = Trinity::Containers::MapGetValuePtr(sMapStore, mapID))
+            return map->MapType == 3;
+
+        return false;
     }
 
     bool MapBuilder::isContinentMap(uint32 mapID) const
@@ -1086,6 +1014,22 @@ namespace MMAP
             default:
                 return false;
         }
+    }
+
+    bool MapBuilder::isDevMap(uint32 mapID) const
+    {
+        if (MapEntry const* map = Trinity::Containers::MapGetValuePtr(sMapStore, mapID))
+            return (map->Flags & 0x2) != 0;
+
+        return false;
+    }
+
+    bool MapBuilder::isBattlegroundMap(uint32 mapID) const
+    {
+        if (MapEntry const* map = Trinity::Containers::MapGetValuePtr(sMapStore, mapID))
+            return map->InstanceType == 3;
+
+        return false;
     }
 
     /**************************************************************************/
